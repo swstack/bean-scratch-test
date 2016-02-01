@@ -31,11 +31,15 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 public void run() {
                     BeanManager.getInstance().startDiscovery(new BeanDiscoveryListener() {
+
+                        private Boolean success;
+
                         @Override
                         public void onBeanDiscovered(Bean bean, int rssi) {
                             System.out.println("Discovered Bean: " + bean.getDevice().getName());
                             if (bean.getDevice().getName().equals(targetName)) {
                                 System.out.println("Found the Bean!");
+                                success = true;
                                 gbl.success(bean);
                             }
                         }
@@ -43,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDiscoveryComplete() {
                             System.out.println("onDiscovery Complete!");
-                            gbl.fail();
+                            if (!success) {
+                                gbl.fail();
+                            }
                         }
                     });
                 }
